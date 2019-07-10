@@ -13,6 +13,7 @@ T MessageQueue<T>::receive() {
     _msgCondVar.wait(uLock, [this]{ return !_queue.empty(); });
 
     T msg = std::move(_queue.back());
+    _queue.pop_back();
     return msg;
 }
 
@@ -40,7 +41,7 @@ void TrafficLight::waitForGreen() {
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         TrafficLightPhase _trafficLightPhaseMsg = _trafficLightMsgQueue.receive();
-        if (_trafficLightPhaseMsg == green)
+        if (_trafficLightPhaseMsg == TrafficLightPhase::green)
             break;
     }
 }
@@ -72,9 +73,8 @@ void TrafficLight::cycleThroughPhases()
 
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        std::mt19937_64 randomGen(fluxCapacitor());
+        std::mt19937 randomGen(fluxCapacitor());
         cycleDuration = switchCycle(randomGen);
-        std::this_thread::sleep_for(std::chrono::milliseconds(cycleDuration));
         timeSinceStart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - cycleStart).count();
         if (timeSinceStart >= cycleDuration) {
             _currentPhase = (_currentPhase == red) ? green : red;
@@ -82,7 +82,7 @@ void TrafficLight::cycleThroughPhases()
             // (DONE) TODO: send an update method to the message queue using move semantics
             _trafficLightMsgQueue.send(std::move(_currentPhase));
 
-        cycleStart = std::chrono::system_clock::now();
+            cycleStart = std::chrono::system_clock::now();
         }
     }
 }
