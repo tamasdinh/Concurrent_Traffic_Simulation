@@ -21,6 +21,8 @@ find_package(OpenCV 4.1 REQUIRED)
 #link_directories(${OpenCV_LIBRARY_DIRS})
 #add_definitions(${OpenCV_DEFINITIONS})
 
+#add_executable(23_Concurrent_Traffic_Simulation_Cpp DT_TrafficLightTest.cpp DT_TrafficLightTest.cpp)
+
 add_executable(23_Concurrent_Traffic_Simulation_Cpp
         src/Graphics.cpp
         src/Graphics.h
