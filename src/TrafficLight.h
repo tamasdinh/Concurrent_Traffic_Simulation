@@ -24,8 +24,8 @@ class MessageQueue {
     public:
         void send(T&&);
         T receive();
-        std::deque<TrafficLightPhase> _queue;
     private:
+        std::deque<TrafficLightPhase> _queue;
         std::condition_variable _msgCondVar;
         std::mutex _msgMutex;
 };
